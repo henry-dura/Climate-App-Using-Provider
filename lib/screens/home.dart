@@ -18,17 +18,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var latitude;
-  var longitude;
-
 
   weatherData() async {
     var location = await Location().determinePosition();
-    latitude = location.latitude;
-    longitude = location.longitude;
-    var _weatherinfo =  WeatherData(url: '$kBaseURL?lat=$latitude&lon=$longitude&appid=$kApiKey');
-    _weatherinfo = await _weatherinfo.getWeatherByLocation();
-    print(_weatherinfo);
+    double latitude = location.latitude;
+    double longitude = location.longitude;
+    WeatherData getData =  WeatherData(url: '$kBaseURL?lat=$latitude&lon=$longitude&appid=$kApiKey');
+    var returnedData = await getData.getWeatherByLocation();
+    var temp =returnedData['weather'][0]['main'];
+    print(temp);
+
 
   }
 
@@ -52,7 +51,7 @@ class _HomeState extends State<Home> {
         child: Column(
           children: [
             Text(
-              '$latitude',
+              'Good',
               style: TextStyle(fontSize: 50),
             ),
             ElevatedButton(onPressed: (){}, child: Text('PRESS'))

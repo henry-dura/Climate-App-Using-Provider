@@ -11,7 +11,7 @@ class WeatherData {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      throw Exception('Failed to load weather data');
+      throw Exception('Weather Data could not be reached');
     }
   }
 }
