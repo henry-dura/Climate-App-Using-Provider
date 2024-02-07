@@ -5,7 +5,7 @@ class WeatherData {
   final url;
   WeatherData({this.url});
 
-  Future getWeatherByLocation() async {
+  Future fetchWeatherDataByLocation() async {
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

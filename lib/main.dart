@@ -1,8 +1,16 @@
+import 'package:climate_app/providers/weather_data.dart';
+import 'package:climate_app/screens/loading_page.dart';
 import 'package:flutter/material.dart';
-import 'screens/home.dart';
+import 'package:provider/provider.dart';
+import 'screens/home_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => WeatherProvider()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -12,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Climate App',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -32,8 +40,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  Home(),
+      home: const HomePage(),
     );
   }
 }
-
