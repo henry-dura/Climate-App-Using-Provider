@@ -11,7 +11,9 @@ class WeatherData {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('Weather data 6iop[p[[[[[[');
       throw Exception('Weather Data could not be reached');
+
     }
   }
 }

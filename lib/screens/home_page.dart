@@ -1,12 +1,15 @@
-import 'package:climate_app/models/weather_model.dart';
+import 'package:climate_app/components/data_widget.dart';
+import 'package:climate_app/components/search_input_field.dart';
+import 'package:climate_app/components/spinner.dart';
+import 'package:climate_app/components/temperature_guage.dart';
+import 'package:climate_app/logic/weather_logic.dart';
 import 'package:climate_app/providers/weather_data.dart';
-import 'package:climate_app/services/location.dart';
-import 'package:flutter/material.dart';
 import 'package:climate_app/utilities/constants.dart';
-import 'package:climate_app/services/location.dart';
-import 'package:climate_app/services/networking.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../components/city_details_widgets.dart';
+
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,45 +19,127 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   void initState() {
     super.initState();
     // Initialization tasks
-    Provider.of<WeatherProvider>(context,listen:false ).setWeatherData();
+
+    Future.delayed(Duration.zero, () {
+      // Perform your state changes here
+      context.read<WeatherProvider>().setWeatherData();
+    });
+    //Provider.of<WeatherProvider>(context, listen: false).setWeatherData();
   }
 
   @override
   Widget build(BuildContext context) {
+    DateTime currentDate = DateTime.now();
+    // Format the date as a string
+    String formattedDate =
+        "${currentDate.day}/${currentDate.month}/${currentDate.year}";
     return Consumer<WeatherProvider>(
         builder: (context, weatherProvider, child) {
       if (weatherProvider.isLoading) {
-        return const Scaffold(
-            body: Center(
-          child: SpinKitWaveSpinner(
-            color: Colors.green,
-            size: 100.0,
-          ),
-        ));
+        return Spinner();
       } else {
         return Scaffold(
-          appBar: AppBar(
-            title: Text('HomePage'),
-          ),
-          body: Column(
-            children: [
-              Text(
-                'Temp: ${weatherProvider.weatherInfo?.temp}',
-                style: TextStyle(fontSize: 30),
+          resizeToAvoidBottomInset: false,
+          backgroundColor: const Color(0xFFFF64D4),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView(
+                children: [
+                TextField(
+                cursorHeight: 25,
+                style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600,color: Colors.white70),
+                decoration: InputDecoration(
+                    hintText: 'Search City',
+                    hintStyle: TextStyle(color:Colors.white70),
+                    prefixIcon: Icon(Icons.search,size: 45,color: Colors.white70,),
+                    filled: true,
+                    fillColor: Colors.black87,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),borderSide: BorderSide.none)
+                ),
+                onSubmitted: (String val){
+                  if(val.length > 2){
+                    weatherProvider.enteredCity(val);
+
+                  }else{print("Enter valid city");}
+
+
+                },
               ),
-              Text(
-                'Location: ${weatherProvider.weatherInfo?.location}',
-                style: TextStyle(fontSize: 30),
-              )
-            ],
+                  SizedBox(
+                    height: 20,
+                  ),
+                  CityDetailsWidgets(
+                    formattedDate: formattedDate,
+                    city: weatherProvider.weatherInfo?.city,
+                    country: weatherProvider.weatherInfo?.location,
+                  ),
+                  kSpace,
+                  Center(
+                    child: Text(
+                      WeatherLogic.getWeatherIcon(weatherProvider.weatherInfo?.condition),
+                      style: TextStyle(fontSize: 90),
+                    ),
+                  ),
+                  // Text(
+                  //   ' ${weatherProvider.weatherInfo?.temp?.toInt()}\u00B0',
+                  //   style: TextStyle(fontSize: 100),
+                  // ),
+                  // TemperatureGauge(
+                  //   minTemperature: weatherProvider.weatherInfo?.minTemperature,
+                  //   maxTemperature: weatherProvider.weatherInfo?.maxTemperature,
+                  //   currentTemperature:
+                  //       weatherProvider.weatherInfo?.currentTemperature,
+                  // ),
+                  Center(
+                    child: Text(
+                      '${weatherProvider.weatherInfo?.currentTemperature}\u00B0C',
+                      style: TextStyle(fontSize: 90,fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                  kSpace,
+                  Text(
+                    WeatherLogic.getMessage(weatherProvider.weatherInfo?.currentTemperature),
+                    style: TextStyle(fontSize: 60,color: Colors.yellowAccent.shade400),
+                  ),
+                  kSpace,
+                  Container(
+                      height: 150,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: kBlackContainerDecoration,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          DataWidget(
+                            iconName: Icons.wind_power,
+                            value: weatherProvider.weatherInfo?.windSpeed,
+                            name: 'Wind Speed',
+                          ),
+                          DataWidget(
+                            iconName: Icons.access_alarm,
+                            value: weatherProvider.weatherInfo?.humidity,
+                            name: 'Humidity',
+                          ),
+                          DataWidget(
+                            iconName: Icons.visibility,
+                            value: weatherProvider.weatherInfo?.pressure,
+                            name: 'Pressure',
+                          ),
+                        ],
+                      )),
+                ],
+              ),
+            ),
           ),
         );
       }
     });
   }
 }
+
+
