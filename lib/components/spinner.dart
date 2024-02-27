@@ -13,7 +13,7 @@ class Spinner extends StatelessWidget {
         body: Center(
           child: SpinKitWaveSpinner(
             color: Colors.green,
-            size: 100.0,
+            size: 120.0,
           ),
         ));
   }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class WeatherLogic{
 
-  static String getWeatherIcon(int condition) {
+  static String getWeatherIcon(var condition) {
     if (condition < 300) {
       return '🌩';
     } else if (condition < 400) {
@@ -24,7 +24,7 @@ class WeatherLogic{
   }
 
 
-  static String getMessage(double temp) {
+  static String getMessage(var temp) {
     if (temp > 25) {
       return 'It\'s 🍦 time';
     } else if (temp > 20) {

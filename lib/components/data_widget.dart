@@ -15,7 +15,7 @@ class DataWidget extends StatelessWidget {
       children: [
         Icon(
           iconName,
-          size: 40,
+          size: 60,
           color: Colors.white70,
         ),
         Text(
@@ -24,7 +24,7 @@ class DataWidget extends StatelessWidget {
         ),
         Text(
           name,
-          style: TextStyle(color: Colors.white70, fontSize: 22,fontWeight: FontWeight.w900),
+          style: TextStyle(color: Colors.yellowAccent.shade400, fontSize: 22,fontWeight: FontWeight.w900),
         )
       ],
     );

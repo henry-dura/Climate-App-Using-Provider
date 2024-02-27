@@ -1,13 +1,13 @@
 import 'package:climate_app/components/data_widget.dart';
-import 'package:climate_app/components/search_input_field.dart';
 import 'package:climate_app/components/spinner.dart';
-import 'package:climate_app/components/temperature_guage.dart';
 import 'package:climate_app/logic/weather_logic.dart';
 import 'package:climate_app/providers/weather_data.dart';
 import 'package:climate_app/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../components/city_details_widgets.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:intl/intl.dart';
 
 
 
@@ -28,15 +28,15 @@ class _HomePageState extends State<HomePage> {
       // Perform your state changes here
       context.read<WeatherProvider>().setWeatherData();
     });
-    //Provider.of<WeatherProvider>(context, listen: false).setWeatherData();
+
   }
 
   @override
   Widget build(BuildContext context) {
     DateTime currentDate = DateTime.now();
     // Format the date as a string
-    String formattedDate =
-        "${currentDate.day}/${currentDate.month}/${currentDate.year}";
+    String formattedDate = DateFormat('EEEE, d MMM, yyyy').format(currentDate);
+       
     return Consumer<WeatherProvider>(
         builder: (context, weatherProvider, child) {
       if (weatherProvider.isLoading) {
@@ -64,6 +64,7 @@ class _HomePageState extends State<HomePage> {
                 onSubmitted: (String val){
                   if(val.length > 2){
                     weatherProvider.enteredCity(val);
+                    Phoenix.rebirth(context); // refresh app
 
                   }else{print("Enter valid city");}
 
@@ -85,16 +86,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(fontSize: 90),
                     ),
                   ),
-                  // Text(
-                  //   ' ${weatherProvider.weatherInfo?.temp?.toInt()}\u00B0',
-                  //   style: TextStyle(fontSize: 100),
-                  // ),
-                  // TemperatureGauge(
-                  //   minTemperature: weatherProvider.weatherInfo?.minTemperature,
-                  //   maxTemperature: weatherProvider.weatherInfo?.maxTemperature,
-                  //   currentTemperature:
-                  //       weatherProvider.weatherInfo?.currentTemperature,
-                  // ),
+
                   Center(
                     child: Text(
                       '${weatherProvider.weatherInfo?.currentTemperature}\u00B0C',
@@ -105,6 +97,7 @@ class _HomePageState extends State<HomePage> {
                   Text(
                     WeatherLogic.getMessage(weatherProvider.weatherInfo?.currentTemperature),
                     style: TextStyle(fontSize: 60,color: Colors.yellowAccent.shade400),
+                    textAlign: TextAlign.center,
                   ),
                   kSpace,
                   Container(
@@ -121,12 +114,12 @@ class _HomePageState extends State<HomePage> {
                             name: 'Wind Speed',
                           ),
                           DataWidget(
-                            iconName: Icons.access_alarm,
+                            iconName: Icons.cloud_circle_sharp,
                             value: weatherProvider.weatherInfo?.humidity,
                             name: 'Humidity',
                           ),
                           DataWidget(
-                            iconName: Icons.visibility,
+                            iconName: Icons.cloud,
                             value: weatherProvider.weatherInfo?.pressure,
                             name: 'Pressure',
                           ),

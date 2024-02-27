@@ -1,7 +1,5 @@
-import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:climate_app/models/weather_model.dart';
-
 import '../services/location.dart';
 import '../services/networking.dart';
 import '../utilities/constants.dart';
@@ -33,7 +31,7 @@ class WeatherProvider extends ChangeNotifier {
         .determinePosition(); // get location longitude and latitude
 
     WeatherData fetchWeatherData;
-    int x = 7;
+
     if(_searchedCity != null){
       fetchWeatherData = WeatherData(
           url:
@@ -42,8 +40,6 @@ class WeatherProvider extends ChangeNotifier {
       fetchWeatherData = WeatherData(
           url:
           '$kBaseURL?lat=${location.latitude}&lon=${location.longitude}&appid=$kApiKey&units=metric');
-
-
     }
 
     var returnedData = await fetchWeatherData.fetchWeatherDataByLocation(); // data returned from open weather map
