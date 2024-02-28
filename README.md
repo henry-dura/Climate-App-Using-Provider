@@ -41,12 +41,7 @@ This project was built using Flutter framework,Provider state management, and da
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- LIVE DEMO -->
 
-## 🚀 Live Demo <a name="live-demo"></a>
-
-**COMING SOON**
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 
