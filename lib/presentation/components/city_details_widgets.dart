@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../utilities/constants.dart';
+
+import '../../constants.dart';
+
 
 class CityDetailsWidgets extends StatelessWidget {
   const CityDetailsWidgets(
