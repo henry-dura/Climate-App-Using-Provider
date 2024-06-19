@@ -64,10 +64,10 @@ In order to run this project you need:
 Clone this repository to your desired folder:
 
 ```sh
-git clone https://github.com/henry-dura/Climate-App-Using-Provider
+git clone https://github.com/henry-dura/Climate-App-With-BLoC
 ```
 ```sh
-cd Climate-App-Using-Provider
+cd Climate-App-With-BLoC
 ```
 
 
