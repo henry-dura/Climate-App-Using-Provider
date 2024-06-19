@@ -9,12 +9,11 @@ class Spinner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-        body: Center(
+    return const Center(
           child: SpinKitWaveSpinner(
             color: Colors.green,
             size: 120.0,
           ),
-        ));
+        );
   }
 }

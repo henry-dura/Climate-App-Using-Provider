@@ -1,30 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:weather_icons/weather_icons.dart';
 
 
 class DataWidget extends StatelessWidget {
-  DataWidget({required this.value, required this.name, required this.iconName});
+  DataWidget({super.key, required this.value, required this.name, required this.iconName,required this.unit});
 
   var value;
   String name;
   IconData iconName;
+  String unit;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Icon(
+        BoxedIcon(
           iconName,
           size: 60,
-          color: Colors.white70,
+          color: Colors.blueGrey.shade500,
         ),
         Text(
           value.toString(),
-          style: TextStyle(color: Color(0xFFFF84D4), fontSize: 30),
+          style: const TextStyle(color: Colors.white, fontSize: 30),
+        ),
+        Text(
+          unit,
+          style: const TextStyle(color: Colors.white, fontSize: 20,fontStyle: FontStyle.italic),
         ),
         Text(
           name,
-          style: TextStyle(color: Colors.yellowAccent.shade400, fontSize: 22,fontWeight: FontWeight.w900),
+          style: const TextStyle(color: Colors.lightBlue, fontSize: 22,fontWeight: FontWeight.w900),
         )
       ],
     );

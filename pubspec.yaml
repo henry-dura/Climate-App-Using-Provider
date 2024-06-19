@@ -23,6 +23,8 @@ dependencies:
   flutter_phoenix: ^1.1.1
   equatable: ^2.0.5
   flutter_bloc: ^8.1.6
+  bloc: ^8.1.4
+  weather_icons: ^3.0.0
 
 
 dev_dependencies:

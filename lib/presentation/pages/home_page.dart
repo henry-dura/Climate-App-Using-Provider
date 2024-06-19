@@ -1,15 +1,16 @@
-
+import 'package:climate_app/bloc/weather_bloc.dart';
 import 'package:climate_app/constants.dart';
+import 'package:climate_app/presentation/UI_logic/weather_logic.dart';
+import 'package:climate_app/presentation/components/searchCity_textField.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import '../../data/services/location.dart';
 import '../components/city_details_widgets.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:intl/intl.dart';
-
 import '../components/data_widget.dart';
 import '../components/spinner.dart';
-
-
+import 'package:weather_icons/weather_icons.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,115 +20,115 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late WeatherBloc weatherBloc;
+
+
+  _getCurrentLocationDetails() async {
+    Position locationData = await Location.determinePosition();
+    weatherBloc.add(WeatherByLocationEvent(
+        lat: locationData.latitude, lon: locationData.longitude));
+  }
+
   @override
   void initState() {
     super.initState();
     // Initialization tasks
-
-    Future.delayed(Duration.zero, () {
-      // Perform your state changes here
-
-    });
-
+    weatherBloc = BlocProvider.of<WeatherBloc>(context);
+    _getCurrentLocationDetails();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     DateTime currentDate = DateTime.now();
     // Format the date as a string
     String formattedDate = DateFormat('EEEE, d MMM, yyyy').format(currentDate);
-       
 
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: const Color(0xFFFF64D4),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView(
-                children: [
-                TextField(
-                cursorHeight: 25,
-                style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600,color: Colors.white70),
-                decoration: InputDecoration(
-                    hintText: 'Search City',
-                    hintStyle: TextStyle(color:Colors.white70),
-                    prefixIcon: Icon(Icons.search,size: 45,color: Colors.white70,),
-                    filled: true,
-                    fillColor: Colors.black87,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),borderSide: BorderSide.none)
-                ),
-                onSubmitted: (String val){
-                  if(val.length > 2){
-                    // weatherProvider.enteredCity(val);
-                    Phoenix.rebirth(context); // refresh app
-
-                  }else{print("Enter valid city");}
-
-
-                },
-              ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  CityDetailsWidgets(
-                    formattedDate: formattedDate,
-                    city: 'Enugu',
-                    country: 'Enugu',
-                  ),
-                  kSpace,
-                  Center(
-                    child: Text(
-                      'Condition',
-                      style: TextStyle(fontSize: 90),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: BlocBuilder<WeatherBloc, WeatherState>(
+            builder: (context, state) {
+              if (state is WeatherLoadingState) {
+                return const Spinner();
+              } else if (state is WeatherLoadSuccessState) {
+                final data = state.weatherModel;
+                return ListView(
+                  children: [
+                    const SearchCityTextField(),
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
-
-                  Center(
-                    child: Text(
-                      'currentTemperature\u00B0C',
-                      style: TextStyle(fontSize: 90,fontWeight: FontWeight.w900),
+                    CityDetailsWidgets(
+                      formattedDate: formattedDate,
+                      city: '${data.city}',
+                      country: '${data.location}',
                     ),
-                  ),
-                  kSpace,
-                  Text(
-                    'getMessage',
-                    style: TextStyle(fontSize: 60,color: Colors.yellowAccent.shade400),
-                    textAlign: TextAlign.center,
-                  ),
-                  kSpace,
-                  Container(
-                      height: 150,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: kBlackContainerDecoration,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          DataWidget(
-                            iconName: Icons.wind_power,
-                            value: 'Speed',
-                            name: 'Wind Speed',
-                          ),
-                          DataWidget(
-                            iconName: Icons.cloud_circle_sharp,
-                            value: 'humidity',
-                            name: 'Humidity',
-                          ),
-                          DataWidget(
-                            iconName: Icons.cloud,
-                            value: 'Pressure',
-                            name: 'Pressure',
-                          ),
-                        ],
-                      )),
-                ],
-              ),
-            ),
+                    kSpace,
+                    Center(
+                      child: Text(
+                        WeatherLogic.getWeatherIcon(data.condition),
+                        style: const TextStyle(fontSize: 90),
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        '${data.temp}\u00B0C',
+                        style: const TextStyle(
+                            fontSize: 90, fontWeight: FontWeight.w900),
+                      ),
+                    ),
+                    kSpace,
+                    Text(
+                      WeatherLogic.getMessage(data.temp),
+                      style: const TextStyle(
+                          fontSize: 60, color: Colors.indigoAccent),
+                      textAlign: TextAlign.center,
+                    ),
+                    kSpace,
+                    Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: kBlackContainerDecoration,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            DataWidget(
+                              iconName:  WeatherIcons.windy,
+                              value: '${data.windSpeed} ',
+                              name: 'Wind Speed',
+                              unit: 'm/s',
+                            ),
+                            DataWidget(
+                              iconName: WeatherIcons.humidity,
+                              value: '${data.humidity} ',
+                              name: 'Humidity',
+                              unit: 'grams/m3',
+                            ),
+                            DataWidget(
+                              iconName: WeatherIcons.barometer,
+                              value: '${data.pressure} ',
+                              name: 'Pressure',
+                              unit: 'Pa',
+                            ),
+                          ],
+                        )),
+                  ],
+                );
+              } else if (state is WeatherLoadErrorState) {
+                return Text(state.errorMessage);
+              } else {
+                return const SizedBox();
+              }
+            },
           ),
-        );
-
+        ),
+      ),
+    );
   }
 }
-
 

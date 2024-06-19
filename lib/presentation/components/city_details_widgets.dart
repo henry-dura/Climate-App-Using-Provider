@@ -20,25 +20,25 @@ class CityDetailsWidgets extends StatelessWidget {
       children: [
         Text(
           city,
-          style: TextStyle(
+          style: const TextStyle(
               fontSize: 50,
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w900),
         ),
         Text(
           country,
-          style: TextStyle(
+          style: const TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.w900,
-              color: Colors.yellowAccent.shade400),
+              color: Colors.indigoAccent),
         ),
         Container(
-          child: Text(
-            '$formattedDate',
-            style: TextStyle(color: Color(0xFFFF64D4), fontSize: 25),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 25),
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           decoration: kBlackContainerDecoration,
+          child: Text(
+            formattedDate,
+            style: const TextStyle(color: Colors.white, fontSize: 25),
+          ),
         ),
       ],
     );
